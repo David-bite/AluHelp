@@ -3,7 +3,7 @@
 <%@ page import="java.sql.*, com.aluhelp.database.ConexionBD" %>
 
 <%
-    // COMPROBAR SESIÓN
+    // comprueba la session
     if (session.getAttribute("usuarioId") == null) {
         response.sendRedirect("login.jsp");
         return;
@@ -136,7 +136,7 @@
 
                 <div class="grid gap-8 md:grid-cols-2">
 
-                    <!-- RESUMIr -->
+                    <!-- RESUMI -->
                     <div class="p-6 bg-white rounded-2xl shadow border border-[#5cb3c1] hover:shadow-lg transition">
                         <h4 class="text-xl font-semibold mb-3 text-[#121c38]">Generar Resumen</h4>
                         <p class="text-sm text-gray-600 mb-4">
@@ -163,7 +163,7 @@
                     </div>
 
                            
-                    <!-- Unir pdf -->
+                    <!-- UNIR pdf -->
                     <div class="p-6 bg-white rounded-2xl shadow border border-[#5cb3c1] hover:shadow-lg transition">
                         <h4 class="text-xl font-semibold mb-3 text-[#121c38]">Unir PDFs</h4>
                         <p class="text-sm text-gray-600 mb-4">

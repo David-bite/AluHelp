@@ -1,3 +1,4 @@
+/*RegistroServlet.java*/
 package com.aluhelp.controlador;
 
 import com.aluhelp.database.ConexionBD;
@@ -22,7 +23,7 @@ public class RegistroServlet extends HttpServlet {
 
         try (Connection conn = ConexionBD.getConnection()) {
 
-            // 1. Verificar si el correo ya existe
+            // Verifica si el correo ya existe
             String checkSql = "SELECT * FROM usuarios WHERE correo = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkSql);
             checkStmt.setString(1, correo);
@@ -34,7 +35,7 @@ public class RegistroServlet extends HttpServlet {
                 return;
             }
 
-            // 2. Insertar usuario
+            // aca se inserta el usuario
             String sql = "INSERT INTO usuarios(nombre, correo, contrasena) VALUES (?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, nombre);
@@ -43,7 +44,7 @@ public class RegistroServlet extends HttpServlet {
 
             stmt.executeUpdate();
 
-            // 3. Redirigir al login
+            // se manda al login
             //aqui manda el parametro EXITO
             response.sendRedirect("login.jsp?exito=1");
 

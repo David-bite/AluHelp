@@ -1,4 +1,4 @@
-
+/*/LoginServlet.java*/
 package com.aluhelp.controlador;
 
 import com.aluhelp.database.ConexionBD;
@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -46,7 +45,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
-            // Si no encontró usuario → error
+            // si no encuentra el usuario manda el error
             request.setAttribute("error", "Correo o contraseña incorrectos.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
 
