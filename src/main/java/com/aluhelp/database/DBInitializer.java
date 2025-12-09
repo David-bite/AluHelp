@@ -15,16 +15,16 @@ public class DBInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
 
         try {
-            // CONEXIÓN AL SERVIDOR (no a una BD)
+            // ACA SE PONE EL USUARIO DE CADA UNO DE PGASMIN
             String url = "jdbc:postgresql://localhost:5432/";
-            String user = "postgres";
+            String user = "david";
             String pass = "123456";
 
             Connection conn = DriverManager.getConnection(url, user, pass);
             Statement st = conn.createStatement();
 
-            // 1. CREAR BD SI NO EXISTE
-            st.executeUpdate("CREATE DATABASE aluhelp");
+            // CREA LAS BD SI NO EXISTE
+            st.executeUpdate("CREATE DATABASE aluhelp_bd");
 
             conn.close();
 
@@ -32,10 +32,10 @@ public class DBInitializer implements ServletContextListener {
             System.out.println("BD ya existía, continuando...");
         }
 
-        // 2. CREAR TABLAS
+        // CREAR TABLAS
         try {
-            String url = "jdbc:postgresql://localhost:5432/aluhelp";
-            String user = "postgres";
+            String url = "jdbc:postgresql://localhost:5432/aluhelp_bd";
+            String user = "david";
             String pass = "123456";
 
             Connection conn = DriverManager.getConnection(url, user, pass);
