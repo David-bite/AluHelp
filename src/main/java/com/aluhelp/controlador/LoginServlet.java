@@ -1,7 +1,10 @@
 /*/LoginServlet.java*/
 package com.aluhelp.controlador;
 
-import com.aluhelp.database.ConexionBD;
+import com.aluhelp.dao.UsuarioDAO;
+import com.aluhelp.daoimpl.UsuarioDAOImpl;
+
+import com.aluhelp.modelo.Usuario;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,12 +12,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    
+    private UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -23,22 +25,18 @@ public class LoginServlet extends HttpServlet {
         String correo = request.getParameter("correo");
         String contrasena = request.getParameter("contrasena");
 
-        try (Connection conn = ConexionBD.getConnection()) {
+        try  {
 
-            String sql = "SELECT id, nombre FROM usuarios WHERE correo = ? AND contrasena = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, correo);
-            stmt.setString(2, contrasena);
+            // Usamos el DAOUsuario.buscarPorCorreoYContrasena(correo, contrasena);
+            Usuario usuario = usuarioDAO.buscarPorCorreoYContrasena(correo, contrasena);
 
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
+            if (usuario!=null) {
 
                 // Crear sesión
                 HttpSession session = request.getSession();
-                session.setAttribute("usuarioId", rs.getInt("id"));
-                session.setAttribute("nombre", rs.getString("nombre"));
-                session.setAttribute("correo", correo);
+                session.setAttribute("usuarioId", usuario.getId());
+                session.setAttribute("nombre", usuario.getNombre());
+                session.setAttribute("correo", usuario.getCorreo());
 
                 // Redirigir a página principal
                 response.sendRedirect("index.jsp");
