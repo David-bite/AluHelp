@@ -57,7 +57,7 @@
                         <th class="p-3 text-left border border-black text-base">Acciones</th>
                         <th class="p-3 text-center border border-black text-base w-24">Eliminar</th> </tr>
                 </thead>
-
+                
                 <tbody>
                     <%
                         try (Connection conn = ConexionBD.getConnection()) {
@@ -132,7 +132,6 @@
                 </tbody>
             </table>
         </div>
-
 
     </body>
 </html>

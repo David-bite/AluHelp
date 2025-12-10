@@ -23,4 +23,7 @@ public interface DocumentoDAO  {
     void borrarDocumento(int usuarioId, String filePath) throws Exception;
 
     Documento obtenerPorId(int id) throws Exception;
+    
+    List<Documento> buscarPorUsuarioYNombre(int usuarioId, String nombre) throws Exception;
+
 }

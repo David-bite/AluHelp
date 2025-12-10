@@ -27,7 +27,7 @@ public class MisDocumentosServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
-
+        
         try {
             
             List<Documento> docs = documentoDAO.listarPorUsuario(usuarioId);
