@@ -1,6 +1,10 @@
+/*UploadPDFServlet.java*/
 package com.aluhelp.controlador;
 
+import com.aluhelp.dao.DocumentoDAO;
+import com.aluhelp.daoimpl.DocumentoDAOImpl;
 import com.aluhelp.database.ConexionBD;
+import com.aluhelp.modelo.Documento;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +18,8 @@ import java.sql.PreparedStatement;
 @WebServlet("/uploadpdf")
 @MultipartConfig
 public class UploadPDFServlet extends HttpServlet {
+    
+    private DocumentoDAO documentoDAO = new DocumentoDAOImpl();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -44,14 +50,9 @@ public class UploadPDFServlet extends HttpServlet {
         }
 
         // Guardar en BD
-        try (Connection conn = ConexionBD.getConnection()) {
-
-            String sql = "INSERT INTO documentos(nombre, usuario_id, file_path) VALUES (?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, fileName);
-            stmt.setInt(2, usuarioId);
-            stmt.setString(3, fileName);
-            stmt.executeUpdate();
+        try {
+            Documento nuevo= new Documento(usuarioId, fileName, fileName);
+            documentoDAO.guardar(nuevo);
 
         } catch (Exception e) {
             e.printStackTrace();

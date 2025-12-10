@@ -1,17 +1,21 @@
+/*/MisDocumentosServlet.java*/
 package com.aluhelp.controlador;
 
+import com.aluhelp.dao.DocumentoDAO;
+import com.aluhelp.daoimpl.DocumentoDAOImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
-import java.sql.*;
-import com.aluhelp.database.ConexionBD;
+import com.aluhelp.modelo.Documento;
 import java.util.*;
 
 @WebServlet("/MisDocumentosServlet")
 public class MisDocumentosServlet extends HttpServlet {
 
+    private DocumentoDAO documentoDAO = new DocumentoDAOImpl();
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -24,27 +28,15 @@ public class MisDocumentosServlet extends HttpServlet {
             return;
         }
 
-        try (Connection conn = ConexionBD.getConnection()) {
-            String sql = "SELECT id, nombre, file_path FROM documentos WHERE usuario_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, usuarioId);
-
-            ResultSet rs = stmt.executeQuery();
-
-            List<Map<String, String>> docs = new ArrayList<>();
-
-            while (rs.next()) {
-                Map<String, String> map = new HashMap<>();
-                map.put("nombre", rs.getString("nombre"));
-                map.put("file", rs.getString("file_path"));
-                map.put("id", rs.getString("id"));
-                docs.add(map);
-            }
-
+        try {
+            
+            List<Documento> docs = documentoDAO.listarPorUsuario(usuarioId);
             request.setAttribute("docs", docs);
+            
 
         } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("error", "ERROR");
         }
 
         request.getRequestDispatcher("mis_documentos.jsp").forward(request, response);

@@ -1,6 +1,10 @@
+/*ResumenServlet.java*/
 package com.aluhelp.controlador;
 
+import com.aluhelp.dao.ResumenDAO;
+import com.aluhelp.daoimpl.ResumenDAOImpl;
 import com.aluhelp.database.ConexionBD;
+import com.aluhelp.modelo.Resumen;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -17,6 +21,8 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 @WebServlet("/resumen")
 public class ResumenServlet extends HttpServlet {
+    
+    private ResumenDAO resumenDAO = new ResumenDAOImpl();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -41,10 +47,11 @@ public class ResumenServlet extends HttpServlet {
         // Ruta completa al archivo PDF
         String pdfPath = getServletContext().getRealPath("") + "uploads/" + fileName;
 
-// 1. Extraer texto del PDF
+        // Extraer texto del PDF
         String textoOriginal = "";
 
-        try (InputStream is = new FileInputStream(pdfPath); PDDocument document = PDDocument.load(is)) {
+        try (InputStream is = new FileInputStream(pdfPath); 
+                PDDocument document = PDDocument.load(is)) {
 
             PDFTextStripper stripper = new PDFTextStripper();
             textoOriginal = stripper.getText(document);
@@ -53,32 +60,25 @@ public class ResumenServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        // 2. Generar resumen (simple)
-        String textoResumido = generarResumen(textoOriginal);
+        // Generar resumen 
+        String resumen = generarResumen(textoOriginal);
 
-        // 3. Guardar en la BD
-        try (Connection conn = ConexionBD.getConnection()) {
-
-            String sql = "INSERT INTO resumenes(usuario_id, texto_original, texto_resumido) VALUES (?, ?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, usuarioId);
-            stmt.setString(2, textoOriginal);
-            stmt.setString(3, textoResumido);
-
-            stmt.executeUpdate();
-
+        // Guardar en la BD
+        try {
+            Resumen resumenfinal = new Resumen(usuarioId, textoOriginal, resumen);
+            resumenDAO.guardar(resumenfinal);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // 4. Mostrar resumen
+        // Mostrar resumen
         request.setAttribute("original", textoOriginal);
-        request.setAttribute("resumen", textoResumido);
+        request.setAttribute("resumen", resumen);
 
         request.getRequestDispatcher("resumen.jsp").forward(request, response);
     }
 
-    // Resumen básico (sin IA)
+    // Resumen easy
     private String generarResumen(String textoOriginal) {
 
         if (textoOriginal == null || textoOriginal.length() < 80) {
